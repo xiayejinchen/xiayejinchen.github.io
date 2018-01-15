@@ -1,6 +1,242 @@
 <!DOCTYPE html>
-<html>
-<body>
-<h1>’‚ «Œ“ π”√github pages¥ÓΩ®µƒ∏ˆ»À’æµ„°£</h1>
-</body>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>ÈîÖÊâìÁÅ∞Â§™Áãº</title>
+        <style>
+			*{margin:0;padding:0;border:none;}
+
+			#game{
+				background:url('img/game_bg.jpg') no-repeat;
+				width:320px;
+				height:480px;
+				position:relative;
+				margin:50px auto;
+			}
+			#score{
+				line-height:46px;
+				margin-left:56px;
+				color:#fff;
+				font-size:25px;
+			}
+			#time{
+				background:url('img/progress.png');
+				width:180px;
+				height:16px;
+				position:absolute;
+				top:66px;
+				left:63px;
+			}
+			#wolves{
+				width:100%;
+				height:100%;
+			}
+			#wolves img{
+				position:absolute;
+				top:115px;
+				left:95px;
+			}
+			#menu{
+				width:100%;
+				height:100%;
+				background:rgba(0,0,0,0.4);
+				position:absolute;
+				top:0;
+				left:0;
+			}
+			#menu p{
+				text-align:center;
+				height:33px;
+				width:150px;
+				line-height:33px;
+				color:#fff;
+				font-size:25px;
+				cursor:pointer;
+				position:absolute;
+				top:0;
+				bottom:0;
+				left:0;
+				right:0;
+				margin:auto;
+				text-shadow:0 0 12px red;
+			}
+        </style>
+    </head>
+    <body>
+    	<div id="game">
+    		<div id="score">0</div>
+    		<div id="time"></div>
+    		<div id="wolves">
+    		</div>
+    		<div id="menu">
+    			<p id="begin">ÂºÄÂßãÊ∏∏Êàè</p>
+    		</div>
+    	</div>
+
+		<script>
+			var score = document.getElementById('score');
+			var time = document.getElementById('time');
+			var wolves = document.getElementById('wolves');
+			var menu = document.getElementById('menu');
+			var begin = document.getElementById('begin');
+
+			var posi1 = {
+				l: '97',
+				t: '115'
+			};
+			var posi2 = {
+				l: '16',
+				t: '160'
+			};
+			var posi3 = {
+				l: '185',
+				t: '142'
+			};
+			var posi4 = {
+				l: '101',
+				t: '192'
+			};
+			var posi5 = {
+				l: '14',
+				t: '221'
+			};
+			var posi6 = {
+				l: '197',
+				t: '212'
+			};
+			var posi7 = {
+				l: '117',
+				t: '274'
+			};
+			var posi8 = {
+				l: '27',
+				t: '294'
+			};
+			var posi9 = {
+				l: '205',
+				t: '296'
+			};
+
+			var positions = [posi1,posi2,posi3,posi4,posi5,posi6,posi7,posi8,posi9];
+			begin.onclick=function(){
+				menu.style.display = "none";
+				score.innerHTML = 0;
+				width = 180;
+				timeTimer = setInterval("changeTime()", 130);
+				wolvesTime = setInterval("changeWolf()",2000);
+
+				// wolfImg.addEventListener('click',function(){
+				// 	clearInterval(wolfTime);
+				// 	clearInterval(wolfTime2);
+				// 	hitWolf();
+				// 	wolves.removeChild(wolfImg);
+
+				// } )
+			}
+
+			function changeTime(){
+				width--;
+				time.style.width = width + "px";
+				if(width == 0){
+					time.style.width = "180px";
+					menu.style.display = "block";
+					begin.innerHTML = "ÂÜçÊù•‰∏ÄÊ¨°";
+					clearInterval(timeTimer);
+					clearInterval(wolvesTime);
+					}
+			}
+
+			function changeWolf(){
+				wolfImg = document.createElement("img");
+				var num = randomNumber(1,100);
+				wolfImgType = num > 80 ? "x" : "h";
+				var posi = randomNumber(0,positions.length -1);
+				var imgPosition = positions[posi];
+				wolfImg.style.top = imgPosition.t + "px";
+				wolfImg.style.left = imgPosition.l + "px";
+				wolves.appendChild(wolfImg);
+				wolfImgIndex = 0;
+				wolfTime = setInterval("upDownWolf()",150);
+				hitWolf(wolfImg);
+			}
+			
+			function upDownWolf(){
+				// if(wolfImgIndex==9){wolfImgIndex=0;}
+				wolfImg.src = "img/" + wolfImgType + wolfImgIndex + ".png";
+				wolfImgIndex++;
+				// console.log(wolfImgIndex+"--1");
+				// console.log(wolfImg.src+"--1");
+				if (wolfImgIndex == 5) {
+					clearInterval(wolfTime);
+					wolfTime2 = setInterval(function(){
+						wolfImgIndex--;
+						wolfImg.src = "img/" + wolfImgType + wolfImgIndex + ".png";
+						// console.log(wolfImgIndex+"--2");
+						// console.log(wolfImg.src+"--2");
+						if (wolfImgIndex == 0) {
+							clearInterval(wolfTime2);
+							wolves.removeChild(wolfImg);
+							};
+					},150);
+				}
+			}
+
+			function hitWolf(wolfImg){
+				wolfImg.onclick = function(){
+					if(wolfImg.hit == true){
+						return;
+					}
+					wolfImg.hit = true;
+					clearInterval(wolfTime);
+					clearInterval(wolfTime2);
+					addScore();
+					wolfImg.hitIndex = 5;
+					hitWolfTime = setInterval(function(){
+						wolfImg.hitIndex++;
+						
+						wolfImg.src = "img/" + wolfImgType + wolfImg.hitIndex + ".png";
+						if(wolfImg.hitIndex == 9){
+							clearInterval(hitWolfTime);
+							wolves.removeChild(wolfImg);
+							}
+					},100);
+				}
+			}
+
+			function addScore(){
+				var currentScore = score.innerText - 0;
+				if(wolfImgType == "h"){
+					score.innerText = currentScore + 10;
+				}else{
+					score.innerText = currentScore - 10;
+				}
+			}
+
+			// wolfImg.onclick = 
+			// function hitWolf(){
+
+			// 	wolfImg.addEventListener('click',function(){
+
+			// 	clearInterval(wolfTime);
+			// 	clearInterval(wolfTime2);
+			// 	setTimeout(function(){
+			// 		while(wolfImgIndex<9){
+			// 		wolfImgIndex++;
+			// 		wolfImg.src = "img/" + wolfImgType + wolfImgIndex + ".png";
+			// 		console.log(wolfImgIndex+"---hit");
+			// 		console.log(wolfImg.src+"---hit");
+			// 			}
+			// 		}, 100);
+			// 	wolves.removeChild(wolfImg);
+			// 	wolfImgIndex=0
+			// 	});
+			// }
+			
+			function randomNumber(min,max){
+				return parseInt(Math.random()*(max-min+1)+min);
+			}
+		</script>
+
+
+    </body>
 </html>
