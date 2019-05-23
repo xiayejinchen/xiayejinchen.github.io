@@ -28,11 +28,11 @@
 </head>
 
 <body>
-    <iframe src="https://www.baidu.com" frameborder="0"></iframe>
+    <iframe src="http://www.baidu.com" frameborder="0"></iframe>
 </body>
-<script src="https://libs.baidu.com/jquery/2.1.4/jquery.js"></script>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.js"></script>
 <script>
-    var arr = ['https://www.youdingb.com', 'https://www.toutiaoth.com', 'https://www.lingdang.biz', 'https://www.apicloud.com' ];
+    var arr = ['http://www.youdingb.com', 'http://www.toutiaoth.com', 'http://www.lingdang.biz', 'https://www.apicloud.com' ];
     // $(function () {
     //     pushHistory();
     //     window.addEventListener("popstate", function (e) {
@@ -64,9 +64,9 @@
                 
                 window.history.forward(1);
                 // alert("不可回退");  //如果需在弹框就有它
-                // self.location = '#'; //如查需要跳转页面就用它
+                self.location = '#'; //如查需要跳转页面就用它
                 console.log(arr[r]);
-                // window.location.href = '#'; // 点击返回后要跳转的链接
+                window.location.href = '#'; // 点击返回后要跳转的链接
                 $('iframe').attr('src', arr[r]);
                 window.history.pushState('forward', null, '#');
             });
